@@ -1,0 +1,66 @@
+name: CI/CD pipeline
+
+on:
+  push:
+    branches: 
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: JDK 11 세팅 해서 빌드 해보기
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'adopt'
+
+    - name: glade wrapper 실행 권한 주기
+      run: chmod +x gradlew
+
+    - name: 빌드
+      run: ./gradlew build
+
+    - name: 단위 테스트, 통합 테스트
+      run: ./gradlew test
+
+    - name: 아티팩트 업로드
+      uses: actions/upload-artifact@v2
+      with:
+        name: demo-app
+        path: build/libs/*.jar
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 아티팩트 다운로드
+      uses: actions/download-artifact@v2
+      with:
+        name: demo-app
+        path: .
+
+    - name: github actions plugin 이용해서 등록한 키 받아오기
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SERVER_KEY }}
+
+    - name: EC2에 배포
+      run: |
+        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} <<-EOF
+          pkill java
+          nohup java -jar /demo-app.jar &
+          disown
+        EOF
+
+    - name: 인수 테스트
+      run: |
