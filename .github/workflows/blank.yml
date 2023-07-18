@@ -32,9 +32,15 @@ jobs:
     - name: 빌드
       run: ./gradlew build
 
+    - name: 확인
+      run: ls -R build/libs/
+
     - name: 단위 테스트, 통합 테스트
       run: ./gradlew test
 
+    - name: 확인
+      run: ls -R build/libs/
+      
     - name: 아티팩트 업로드
       uses: actions/upload-artifact@v2
       with:
