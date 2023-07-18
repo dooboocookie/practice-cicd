@@ -35,15 +35,17 @@ jobs:
     - name: 단위 테스트, 통합 테스트
       run: ./gradlew test
       
-      
-    - name: Set permissions
-      run: chmod 666 ./build/libs/demo-0.0.1-SNAPSHOT.jar
+    - name: Print working directory
+      run: pwd
   
     - name: 아티팩트 업로드
       uses: actions/upload-artifact@v2
       with:
         name: demo-app
         path: ./build/libs/demo-0.0.1-SNAPSHOT.jar
+
+    - name: 경로 확인
+      run: pwd
 
   deploy:
     needs: build
