@@ -52,14 +52,14 @@ jobs:
         name: demo-app
         path: .
 
-    - name: github actions plugin 이용해서 등록한 키 받아오기
-      uses: webfactory/ssh-agent@v0.5.3
-      with:
-        ssh-private-key: ${{ secrets.SERVER_KEY }}
+    - name: Decode and set up SSH key
+      run: |
+        echo "${{ secrets.SERVER_KEY }}" | base64 --decode > key.pem
+        chmod 600 key.pem
 
     - name: EC2에 배포
       run: |
-        ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} <<-EOF
+        ssh -i key.pem ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} <<-EOF
           pkill java
           nohup java -jar /demo-app.jar &
           disown
