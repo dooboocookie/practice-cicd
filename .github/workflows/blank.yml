@@ -39,8 +39,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: demo-app
-        path: /home/runner/work/practice-cicd/practice-cicd/demo
-/build/libs/demo-0.0.1-SNAPSHOT.jar
+        path: /home/runner/work/practice-cicd/practice-cicd/demo/build/libs/demo-0.0.1-SNAPSHOT.jar
 
   deploy:
     needs: build
