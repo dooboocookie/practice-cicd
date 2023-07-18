@@ -17,14 +17,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: JDK 11 세팅 해서 빌드 해보기
+    - name: JDK 11 세팅
       uses: actions/setup-java@v2
       with:
         java-version: '11'
         distribution: 'adopt'
-
-    - name: glade wrapper 실행 권한 주기
-      run: chmod +x gradlew
 
     - name: 빌드
       run: ./gradlew build
