@@ -13,7 +13,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    defaults:
+      run:
+        working-directory: demo
+        
     steps:
     - uses: actions/checkout@v2
 
@@ -23,10 +26,7 @@ jobs:
         java-version: '11'
         distribution: 'adopt'
 
-    - name: Check current directory
-      run: ls -la
-
-    - name: Grant execute permission for gradlew
+    - name: 그래들 래퍼 실행 권한
       run: chmod +x gradlew
 
     - name: 빌드
